@@ -1,0 +1,9 @@
+c:\users\macro\documents\visual studio 2010\Projects\VisionProAPI\VisionProAPI\obj\x86\Debug\VisionProAPI.csprojResolveAssemblyReference.cache
+c:\users\macro\documents\visual studio 2010\Projects\VisionProAPI\VisionProAPI\obj\x86\Debug\VisionProAPI.Form1.resources
+c:\users\macro\documents\visual studio 2010\Projects\VisionProAPI\VisionProAPI\obj\x86\Debug\VisionProAPI.Properties.Resources.resources
+c:\users\macro\documents\visual studio 2010\Projects\VisionProAPI\VisionProAPI\obj\x86\Debug\VisionProAPI.csproj.GenerateResource.Cache
+c:\users\macro\documents\visual studio 2010\Projects\VisionProAPI\VisionProAPI\bin\Debug\VisionProAPI.exe.config
+c:\users\macro\documents\visual studio 2010\Projects\VisionProAPI\VisionProAPI\bin\Debug\VisionProAPI.exe
+c:\users\macro\documents\visual studio 2010\Projects\VisionProAPI\VisionProAPI\bin\Debug\VisionProAPI.pdb
+c:\users\macro\documents\visual studio 2010\Projects\VisionProAPI\VisionProAPI\obj\x86\Debug\VisionProAPI.exe
+c:\users\macro\documents\visual studio 2010\Projects\VisionProAPI\VisionProAPI\obj\x86\Debug\VisionProAPI.pdb
