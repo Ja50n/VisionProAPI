@@ -16,21 +16,21 @@ namespace VisionProAPI
         public double X = 0;
         public double Y = 0;
         public double Angle = 0;
-        public string waring = "";
         public string pathin = @"D:\M503_Photo\1.bmp";
+        public string pathout = @"D:\M503_Photo\2.bmp";
         public string vpppath = @"D:\M503_Photo\M503.vpp";
         public Form1()
         {
             InitializeComponent();
         }
-
+        Vision.Result result; 
         private void button1_Click(object sender, EventArgs e)
         {
-            vision.Run(ref waring,500,pathin);
-            vision.GetResult();
-            Angle = vision.Result_Angle;
-            X = vision.Result_X;
-            Y = vision.Result_Y;
+            vision.Run(500,pathin);
+            vision.GetResult(ref result);
+            Angle = result.ResultAngle;
+            X = result.ResultX;
+            Y = result.ResultY;
             label1.Text = X.ToString();
             label2.Text = Y.ToString();
             label3.Text = Angle.ToString();
@@ -39,7 +39,32 @@ namespace VisionProAPI
         private void Form1_Load(object sender, EventArgs e)
         {
             vision = new Vision();
-            vision.init(vpppath);
+            vision.init(vpppath, cogRecordDisplay1);
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            vision.SetColorMapPreDefined(3);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            vision.SetColorMapPreDefined(0);
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            vision.SetColorMapPreDefined(1);
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            vision.SetColorMapPreDefined(2);
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            
         }
         
     }
