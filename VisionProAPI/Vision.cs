@@ -5,7 +5,6 @@ using Cognex.VisionPro.QuickBuild;
 using Cognex.VisionPro;
 using Cognex.VisionPro.ToolGroup;
 using Cognex.VisionPro.ImageFile;
-using Cognex.VisionPro.ResultsAnalysis;
 
 namespace VisionProAPI
 {
@@ -104,39 +103,39 @@ namespace VisionProAPI
 		/// <param name="count">Count.</param>
 		/// <param name="vpppath">Vpppath.</param>
 		/// <param name="cogRecordDisplayin">Cog record displayin.</param>
-		public bool init(List<string> vpppath, CogRecordDisplay cogRecordDisplayin = null)
-        {
-			if (null == vpppath)
-            {
-                return false;
-            }
-            for (int i = 0; i < vpppath.Count; i++)
-            {
-                if (vpppath[i] == null)
-                {
-                    return false;
-                }
-                try
-                {
-                    myJobManagerList[i] = (CogJobManager)CogSerializer.LoadObjectFromFile(vpppath[i]);
-                    myJobList[i] = myJobManagerList[i].Job(0);
-                    myJobIndependentList[i] = myJobList[i].OwnedIndependent;
-                    myJobManagerList[i].UserQueueFlush();
-                    myJobManagerList[i].FailureQueueFlush();
-                    myJobList[i].ImageQueueFlush();
-                    myJobIndependentList[i].RealTimeQueueFlush();
-					updateDisplaySource(cogRecordDisplayin);
-                }
-                catch
-                {
+        //public bool init(List<string> vpppath, CogRecordDisplay cogRecordDisplayin = null)
+        //{
+        //    if (null == vpppath)
+        //    {
+        //        return false;
+        //    }
+        //    for (int i = 0; i < vpppath.Count; i++)
+        //    {
+        //        if (vpppath[i] == null)
+        //        {
+        //            return false;
+        //        }
+        //        try
+        //        {
+        //            myJobManagerList[i] = (CogJobManager)CogSerializer.LoadObjectFromFile(vpppath[i]);
+        //            myJobList[i] = myJobManagerList[i].Job(0);
+        //            myJobIndependentList[i] = myJobList[i].OwnedIndependent;
+        //            myJobManagerList[i].UserQueueFlush();
+        //            myJobManagerList[i].FailureQueueFlush();
+        //            myJobList[i].ImageQueueFlush();
+        //            myJobIndependentList[i].RealTimeQueueFlush();
+        //            updateDisplaySource(cogRecordDisplayin);
+        //        }
+        //        catch
+        //        {
 
-                }
-            }
-            return true;
-        }
+        //        }
+        //    }
+        //    return true;
+        //}
         #endregion
         #region updateDisplaySource
-		/// <summary>
+        /// <summary>
 		/// Update the display source of the Display tools of Main User Interface
 		/// </summary>
 		/// <returns><c>true</c>, if display source was updated, <c>false</c> otherwise.</returns>

@@ -14,10 +14,10 @@ namespace VisionProAPI
         private CogJobManager myJobManager;
         private List<CogJob> myJob;
         private List<CogJobIndependent> myJobIndependent;
-        private List<CogImageFileTool> myImageFile;
-        private List<Bitmap> Imagein;
+        private CogImageFileTool myImageFile;
+        private Bitmap Imagein;
         private List<CogRecordDisplay> cogRecordDisplay = null;
-        private List<CogToolGroup> myToolGroup;
+        private CogToolGroup myToolGroup;
         private List<string> ResultRequest;
         private string ResultRequestOnce;
         #endregion
@@ -41,6 +41,7 @@ namespace VisionProAPI
                 }
                 myJobManager.UserQueueFlush();
                 myJobManager.FailureQueueFlush();
+                updateAllDisplaySource(cogRecordDisplayin);
             }
             catch { }
             return true;
@@ -104,28 +105,48 @@ namespace VisionProAPI
         }
         #endregion
         #region GetImageFromFile
-        private bool GetImage(int amountOfJobs, List<string> pathin)
+        private bool GetImage(int numOfJobs, List<string> pathin)
         {
-            for(int i=0;i<amountOfJobs;i++)
-            {
-                if (null == pathin[i])
+
+                if (null == pathin[numOfJobs])
                 {
                     return false;
                 }
                 else
                 {
-                    myToolGroup[i] = (CogToolGroup)(myJobManager.Job(i).VisionTool);
-                    myImageFile[i] = (CogImageFileTool)(myToolGroup[i].Tools["CogImageFileTool1"]);
-                    myImageFile[i].Operator.Open(pathin[i], CogImageFileModeConstants.Read);
-                    Imagein[i] = new Bitmap(pathin[i]);
-                    myImageFile[i].InputImage = new CogImage8Grey(Imagein[i]);
-                    myImageFile[i].Run();
-                }
+                    myToolGroup = (CogToolGroup)(myJobManager.Job(numOfJobs).VisionTool);
+                    myImageFile = (CogImageFileTool)(myToolGroup.Tools["CogImageFileTool1"]);
+                    myImageFile.Operator.Open(pathin[numOfJobs], CogImageFileModeConstants.Read);
+                    Imagein = new Bitmap(pathin[numOfJobs]);
+                    myImageFile.InputImage = new CogImage8Grey(Imagein);
+                    myImageFile.Run();
+                
             }
             return true;
         }
         #endregion
         #region GetResult
+        public bool GetResultShow(int numOfSource)
+        {
+            if (myJobManager == null)
+            {
+                return false;
+            }
+            ICogRecord tmpRecord;
+            ICogRecord topRecord = myJobManager.UserResult();
+            if (null != cogRecordDisplay)
+            {
+                tmpRecord = topRecord.SubRecords["ShowLastRunRecordForUserQueue"];
+                tmpRecord = tmpRecord.SubRecords["LastRun"];
+                tmpRecord = tmpRecord.SubRecords["CogFixtureTool1.OutputImage"];
+                if (null != tmpRecord.Content)
+                {
+                    cogRecordDisplay[numOfSource].Record = tmpRecord;
+                }
+                cogRecordDisplay[numOfSource].Fit(true);
+            }
+            return true;
+        }
         /// <summary>
         /// Get All Results together
         /// </summary>
@@ -171,35 +192,35 @@ namespace VisionProAPI
         /// <param name="numOfResult"></param>
         /// <param name="resultout"></param>
         /// <returns></returns>
-        public bool GetOneResult(List<string> resultin, int numOfResult, ref List<double> resultout)
-        {
-            if (null == myJobManager)
-            {
-                return false;
-            }
-            ICogRecord tmpRecord;
-            ICogRecord topRecord = myJobManager.UserResult();
-            if (null == topRecord)
-            {
-                return false;
-            }
-            if (null == resultin)
-            {
-                if (null == resultin[numOfResult])
-                {
-                    return false;
-                }
-                else
-                {
-                    ResultRequest[numOfResult] = "@\"" + resultin[numOfResult] + "\"";
-                    tmpRecord = topRecord.SubRecords[ResultRequest[numOfResult]];
-                    ResultRequest[numOfResult] = resultin[numOfResult];
-                    resultout[numOfResult] = (double)tmpRecord.Content;
-                }
-                return false;
-            }
-            return true;
-        }
+        //public bool GetOneResult(List<string> resultin, int numOfResult, ref List<double> resultout)
+        //{
+        //    if (null == myJobManager)
+        //    {
+        //        return false;
+        //    }
+        //    ICogRecord tmpRecord;
+        //    ICogRecord topRecord = myJobManager.UserResult();
+        //    if (null == topRecord)
+        //    {
+        //        return false;
+        //    }
+        //    if (null == resultin)
+        //    {
+        //        if (null == resultin[numOfResult])
+        //        {
+        //            return false;
+        //        }
+        //        else
+        //        {
+        //            ResultRequest[numOfResult] = "@\"" + resultin[numOfResult] + "\"";
+        //            tmpRecord = topRecord.SubRecords[ResultRequest[numOfResult]];
+        //            ResultRequest[numOfResult] = resultin[numOfResult];
+        //            resultout[numOfResult] = (double)tmpRecord.Content;
+        //        }
+        //        return false;
+        //    }
+        //    return true;
+        //}
         /// <summary>
         /// Get One Result with string
         /// </summary>
@@ -227,6 +248,69 @@ namespace VisionProAPI
                 return false;
             }
             return true;
+        }
+        #endregion
+        #region Run
+        public bool Run(int time, int numOfJobs, List<string> _pathin)
+        {
+            GetImage(numOfJobs, _pathin);
+            try
+            {
+                myJobManager.Run();
+                System.Threading.Thread.Sleep(time);
+            }
+            catch { }
+            return true;
+        }
+        #endregion
+        #region SetColorMapPreDefined
+        public bool SetColorMapPreDefined(string type,int numOfSource)
+        {
+            if (null == type)
+            {
+                return false;
+            }
+            switch (type)
+            {
+                case "None":
+                    cogRecordDisplay[numOfSource].ColorMapPredefined = Cognex.VisionPro.Display.CogDisplayColorMapPredefinedConstants.None;
+                    return true;
+                case "Grey":
+                    cogRecordDisplay[numOfSource].ColorMapPredefined = Cognex.VisionPro.Display.CogDisplayColorMapPredefinedConstants.Grey;
+                    return true;
+                case "Thermal":
+                    cogRecordDisplay[numOfSource].ColorMapPredefined = Cognex.VisionPro.Display.CogDisplayColorMapPredefinedConstants.Thermal;
+                    return true;
+                case "Height":
+                    cogRecordDisplay[numOfSource].ColorMapPredefined = Cognex.VisionPro.Display.CogDisplayColorMapPredefinedConstants.Height;
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        #endregion
+        #region CloseAndStop
+        public bool Close()
+        {
+            if (null != myJobManager)
+            {
+                for (int i = 0; i < myJob.Count; i++)
+                {
+                    myJob[i].Reset();
+                    myJobManager.Stop();
+                    myJobManager.Shutdown();
+                    myJob[i] = null;
+                    myJobManager = null;
+                    myJobIndependent[i] = null;
+                }
+                return true;
+            }
+            GC.Collect();
+            return false;
+        }
+        public void Stop()
+        {
+            myJobManager.Stop();
         }
         #endregion
     }

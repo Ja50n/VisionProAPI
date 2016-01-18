@@ -28,3 +28,10 @@ D:\Work\VisionProAPIV1.1\VisionProAPI\obj\x86\Debug\VisionProAPI.csproj.Generate
 D:\Github\VisionProAPI\VisionProAPI\bin\Debug\VisionProAPI.exe.config
 D:\Github\VisionProAPI\VisionProAPI\obj\x86\Debug\VisionProAPI.exe
 D:\Github\VisionProAPI\VisionProAPI\obj\x86\Debug\VisionProAPI.pdb
+D:\Github\VisionProAPI\VisionProAPI\obj\x86\Debug\VisionProAPI.csprojResolveAssemblyReference.cache
+D:\Github\VisionProAPI\VisionProAPI\obj\x86\Debug\VisionProAPI.Form1.resources
+D:\Github\VisionProAPI\VisionProAPI\obj\x86\Debug\VisionProAPI.Form2.resources
+D:\Github\VisionProAPI\VisionProAPI\obj\x86\Debug\VisionProAPI.Properties.Resources.resources
+D:\Github\VisionProAPI\VisionProAPI\obj\x86\Debug\VisionProAPI.csproj.GenerateResource.Cache
+D:\Github\VisionProAPI\VisionProAPI\bin\Debug\VisionProAPI.exe
+D:\Github\VisionProAPI\VisionProAPI\bin\Debug\VisionProAPI.pdb

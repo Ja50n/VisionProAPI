@@ -120,35 +120,35 @@ namespace VisionProAPI
         /// <param name="numOfResult"></param>
         /// <param name="resultout"></param>
         /// <returns></returns>
-        public bool GetOneResult(List<string> resultin, int numOfResult, ref List<double> resultout)
-        {
-            if (null == myJobManager)
-            {
-                return false;
-            }
-            ICogRecord tmpRecord;
-            ICogRecord topRecord = myJobManager.UserResult();
-            if (null == topRecord)
-            {
-                return false;
-            }
-            if (null == resultin)
-            {
-                if (null == resultin[numOfResult])
-                {
-                    return false;
-                }
-                else
-                {
-                    ResultRequest[numOfResult] = "@\"" + resultin[numOfResult] + "\"";
-                    tmpRecord = topRecord.SubRecords[ResultRequest[numOfResult]];
-                    ResultRequest[numOfResult] = resultin[numOfResult];
-                    resultout[numOfResult] = (double)tmpRecord.Content;
-                }
-                return false;
-            }
-            return true;
-        }
+        //public bool GetOneResult(List<string> resultin, int numOfResult, ref List<double> resultout)
+        //{
+        //    if (null == myJobManager)
+        //    {
+        //        return false;
+        //    }
+        //    ICogRecord tmpRecord;
+        //    ICogRecord topRecord = myJobManager.UserResult();
+        //    if (null == topRecord)
+        //    {
+        //        return false;
+        //    }
+        //    if (null == resultin)
+        //    {
+        //        if (null == resultin[numOfResult])
+        //        {
+        //            return false;
+        //        }
+        //        else
+        //        {
+        //            ResultRequest[numOfResult] = "@\"" + resultin[numOfResult] + "\"";
+        //            tmpRecord = topRecord.SubRecords[ResultRequest[numOfResult]];
+        //            ResultRequest[numOfResult] = resultin[numOfResult];
+        //            resultout[numOfResult] = (double)tmpRecord.Content;
+        //        }
+        //        return false;
+        //    }
+        //    return true;
+        //}
         /// <summary>
         /// Get One Result with string
         /// </summary>
