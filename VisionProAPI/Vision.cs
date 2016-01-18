@@ -17,12 +17,12 @@ namespace VisionProAPI
         private CogJobIndependent myJobIndependent;
         private CogImageFileTool mIFTool;
         private Bitmap Imagein;
-        //public Bitmap Imageout;
         private CogToolGroup mTGTool;
         private CogRecordDisplay cogRecordDisplay = null;
         private List<CogJobManager> myJobManagerList;
         private List<CogJob> myJobList;
         private List<CogJobIndependent> myJobIndependentList;
+		private List<CogJob> myJobsList;
         public struct Result
         {
             public double ResultX;
@@ -31,6 +31,11 @@ namespace VisionProAPI
         }
         #endregion
         #region init
+		/// <summary>
+		/// One VPP with One Job
+		/// </summary>
+		/// <param name="vpppath">Vpppath.</param>
+		/// <param name="cogRecordDisplayin">Cog record displayin.</param>
         public bool init(string vpppath,CogRecordDisplay cogRecordDisplayin = null)
         {
             if (null == vpppath)
@@ -54,9 +59,54 @@ namespace VisionProAPI
             }
             return true;           
         }
-        public bool init(int count, List<string> vpppath)
+		/// <summary>
+		/// Any VPP with List and Each VPP contains any Jobs With List
+		/// </summary>
+		/// <param name="vpppath">Vpppath.</param>
+		/// <param name="cogRecordDisplayin">Cog record displayin.</param>
+		public bool init(List<string> vpppath,CogRecordDisplay cogRecordDisplayin = null)
+		{
+			if (null == vpppath)
+			{
+				return false;
+			}
+			try
+			{
+				for(int i =0; i<vpppath.Count;i++)
+				{
+					myJobManagerList[i] = (CogJobManager)CogSerializer.LoadObjectFromFile(vpppath);
+					//Problem: How to get the number of Jobs of each VPP, and if each VPP has different number of Jobs.
+					for(int j =0; j<1000 ;j++)
+					{
+						myJobsList[j] = myJobManagerList[i].Job(j);
+						myJobIndependentList[j] = myJobsList[j].OwnedIndependent;
+						myJobsList[j].ImageQueueFlush();
+						myJobIndependentList[j].RealTimeQueueFlush();
+						if(null == myJobsList[j])
+						{
+							break;
+						}
+					}
+					myJobManagerList[i].UserQueueFlush();
+					myJobManagerList[i].FailureQueueFlush();
+					updateDisplaySource(cogRecordDisplayin);
+				}
+			}
+			catch
+			{
+
+			}
+			return true;           
+		}
+		/// <summary>
+		/// Any VPPS with List and each VPP contains One Job.
+		/// </summary>
+		/// <param name="count">Count.</param>
+		/// <param name="vpppath">Vpppath.</param>
+		/// <param name="cogRecordDisplayin">Cog record displayin.</param>
+		public bool init(List<string> vpppath, CogRecordDisplay cogRecordDisplayin = null)
         {
-            if (vpppath == null)
+			if (null == vpppath)
             {
                 return false;
             }
@@ -75,19 +125,22 @@ namespace VisionProAPI
                     myJobManagerList[i].FailureQueueFlush();
                     myJobList[i].ImageQueueFlush();
                     myJobIndependentList[i].RealTimeQueueFlush();
+					updateDisplaySource(cogRecordDisplayin);
                 }
                 catch
                 {
 
                 }
             }
-                
-            
             return true;
-
         }
         #endregion
         #region updateDisplaySource
+		/// <summary>
+		/// Update the display source of the Display tools of Main User Interface
+		/// </summary>
+		/// <returns><c>true</c>, if display source was updated, <c>false</c> otherwise.</returns>
+		/// <param name="cogRecordDisplayin">Cog record displayin.</param>
         public bool updateDisplaySource(CogRecordDisplay cogRecordDisplayin = null)
         {
             if (null == cogRecordDisplayin)
@@ -99,6 +152,11 @@ namespace VisionProAPI
         }
         #endregion
         #region GetImageFromFile
+		/// <summary>
+		/// Get the Image source (One VPP with One Job)
+		/// </summary>
+		/// <returns><c>true</c>, if in was dataed, <c>false</c> otherwise.</returns>
+		/// <param name="pathin">Pathin.</param>
         private bool DataIn(string pathin)
         {
             mTGTool = (CogToolGroup)(myJobManager.Job(0).VisionTool);
@@ -109,6 +167,11 @@ namespace VisionProAPI
             mIFTool.Run();
             return true; 
         }
+		/// <summary>
+		/// Get the Image source (some VPP with One Job)
+		/// </summary>
+		/// <returns><c>true</c>, if in was dataed, <c>false</c> otherwise.</returns>
+		/// <param name="pathin">Pathin.</param>
         private bool DataIn(List<string> pathin)
         {
             for (int i = 0; i < pathin.Count; i++)
@@ -136,7 +199,6 @@ namespace VisionProAPI
             {
                 return false;
             }
-            //GetImage(pathout, topRecord);
             tmpRecord = topRecord.SubRecords[@"X"];
             if (tmpRecord.Content != null)
             {
@@ -177,7 +239,6 @@ namespace VisionProAPI
             {
                 return false;
             }
-            //GetImage(pathout, topRecord);
             tmpRecord = topRecord.SubRecords[@"X"];
             if (null != tmpRecord.Content) if (tmpRecord.Content != null)
             {
@@ -248,7 +309,8 @@ namespace VisionProAPI
                 System.Threading.Thread.Sleep(time);
             }
             catch
-            { }
+            { 
+			}
             return true;
         }
         public bool Run(int time, List<string> _pathin, int numOfVpp)
@@ -260,7 +322,8 @@ namespace VisionProAPI
                 System.Threading.Thread.Sleep(time);
             }
             catch
-            { }
+			{ 
+			}
             return true;
         }
         #endregion

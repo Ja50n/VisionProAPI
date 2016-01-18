@@ -1,0 +1,12 @@
+﻿<Properties StartupItem="VisionProAPI/VisionProAPI.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="VisionProAPI/Vision.cs">
+    <Files>
+      <File FileName="VisionProAPI/Vision.cs" Line="14" Column="24" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
