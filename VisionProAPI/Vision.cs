@@ -74,7 +74,7 @@ namespace VisionProAPI
 			{
 				for(int i =0; i<vpppath.Count;i++)
 				{
-					myJobManagerList[i] = (CogJobManager)CogSerializer.LoadObjectFromFile(vpppath);
+					myJobManagerList[i] = (CogJobManager)CogSerializer.LoadObjectFromFile(vpppath[i]);
 					//Problem: How to get the number of Jobs of each VPP, and if each VPP has different number of Jobs.
 					for(int j =0; j<1000 ;j++)
 					{

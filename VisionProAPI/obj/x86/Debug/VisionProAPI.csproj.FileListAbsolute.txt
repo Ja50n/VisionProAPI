@@ -25,3 +25,6 @@ D:\Work\VisionProAPIV1.1\VisionProAPI\obj\x86\Debug\VisionProAPI.csprojResolveAs
 D:\Work\VisionProAPIV1.1\VisionProAPI\obj\x86\Debug\VisionProAPI.Form1.resources
 D:\Work\VisionProAPIV1.1\VisionProAPI\obj\x86\Debug\VisionProAPI.Properties.Resources.resources
 D:\Work\VisionProAPIV1.1\VisionProAPI\obj\x86\Debug\VisionProAPI.csproj.GenerateResource.Cache
+D:\Github\VisionProAPI\VisionProAPI\bin\Debug\VisionProAPI.exe.config
+D:\Github\VisionProAPI\VisionProAPI\obj\x86\Debug\VisionProAPI.exe
+D:\Github\VisionProAPI\VisionProAPI\obj\x86\Debug\VisionProAPI.pdb
