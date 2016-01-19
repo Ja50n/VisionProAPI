@@ -11,7 +11,9 @@ namespace VisionProAPI
     class Vision2
     {
         #region Definition
-        private CogJobManager myJobManager;
+        private CogJobManager myJobManager0;
+        private CogJobManager myJobManager1;
+        private CogJobManager myJobManager2;
         private CogJob myJob0;
         private CogJob myJob1;
         private CogJob myJob2;
@@ -37,36 +39,62 @@ namespace VisionProAPI
             public double ResultAngle;
         }
         public struct Result1
-        { }
+        {
+            public double ResultAngle;
+            public double ResultTitle;
+            public double ResultDistance;
+        }
         public struct Result2
         { }
         #endregion
         #region init
-        public bool init(string vpppath, CogRecordDisplay cogRecordDisplayin0 = null, CogRecordDisplay cogRecordDisplayin1 = null, CogRecordDisplay cogRecordDisplayin2 = null)
+        public bool init(string vpppath0,string vpppath1, string vpppath2, CogRecordDisplay cogRecordDisplayin0 = null, CogRecordDisplay cogRecordDisplayin1 = null, CogRecordDisplay cogRecordDisplayin2 = null)
         {
-            if (null == vpppath)
+            if (null == vpppath0)
             {
                 return false;
             }
             try
             {
-                myJobManager = (CogJobManager)CogSerializer.LoadObjectFromFile(vpppath);
-                myJob0 = myJobManager.Job(0);
+                myJobManager0 = (CogJobManager)CogSerializer.LoadObjectFromFile(vpppath0);
+                myJob0 = myJobManager0.Job(0);
                 myJobIndependent0 = myJob0.OwnedIndependent;
-                myJob1 = myJobManager.Job(1);
-                myJobIndependent1 = myJob1.OwnedIndependent;
-                myJob2 = myJobManager.Job(2);
-                myJobIndependent2 = myJob2.OwnedIndependent;
-                myJobManager.UserQueueFlush();
-                myJobManager.FailureQueueFlush();
+                myJobManager0.UserQueueFlush();
+                myJobManager0.FailureQueueFlush();
                 myJob0.ImageQueueFlush();
                 myJobIndependent0.RealTimeQueueFlush();
+                updateDisplaySource0(cogRecordDisplayin0);
+            }
+            catch { }
+            if (null == vpppath1)
+            {
+                return false;
+            }
+            try
+            {
+                myJobManager1 = (CogJobManager)CogSerializer.LoadObjectFromFile(vpppath1);
+                myJob1 = myJobManager1.Job(0);
+                myJobIndependent1 = myJob1.OwnedIndependent;
+                myJobManager1.UserQueueFlush();
+                myJobManager1.FailureQueueFlush();
                 myJob1.ImageQueueFlush();
                 myJobIndependent1.RealTimeQueueFlush();
+                updateDisplaySource1(cogRecordDisplayin1);
+            }
+            catch { }
+            if (null == vpppath2)
+            {
+                return false;
+            }
+            try
+            {
+                myJobManager2 = (CogJobManager)CogSerializer.LoadObjectFromFile(vpppath2);
+                myJob2 = myJobManager2.Job(0);
+                myJobIndependent2 = myJob2.OwnedIndependent;
+                myJobManager2.UserQueueFlush();
+                myJobManager2.FailureQueueFlush();
                 myJob2.ImageQueueFlush();
                 myJobIndependent2.RealTimeQueueFlush();
-                updateDisplaySource0(cogRecordDisplayin0);
-                updateDisplaySource1(cogRecordDisplayin1);
                 updateDisplaySource2(cogRecordDisplayin2);
             }
             catch { }
@@ -120,7 +148,7 @@ namespace VisionProAPI
         #region GetImageFromFile
         private bool GetImage0(string pathin)
         {
-            myToolGroup0 = (CogToolGroup)(myJobManager.Job(0).VisionTool);
+            myToolGroup0 = (CogToolGroup)(myJobManager0.Job(0).VisionTool);
             myImageFile0 = (CogImageFileTool)(myToolGroup0.Tools["CogImageFileTool1"]);
             myImageFile0.Operator.Open(pathin, CogImageFileModeConstants.Read);
             Imagein0 = new Bitmap(pathin);
@@ -130,7 +158,7 @@ namespace VisionProAPI
         }
         private bool GetImage1(string pathin)
         {
-            myToolGroup1 = (CogToolGroup)(myJobManager.Job(1).VisionTool);
+            myToolGroup1 = (CogToolGroup)(myJobManager1.Job(0).VisionTool);
             myImageFile1 = (CogImageFileTool)(myToolGroup1.Tools["CogImageFileTool1"]);
             myImageFile1.Operator.Open(pathin, CogImageFileModeConstants.Read);
             Imagein1 = new Bitmap(pathin);
@@ -140,7 +168,7 @@ namespace VisionProAPI
         }
         private bool GetImage2(string pathin)
         {
-            myToolGroup2 = (CogToolGroup)(myJobManager.Job(2).VisionTool);
+            myToolGroup2 = (CogToolGroup)(myJobManager2.Job(0).VisionTool);
             myImageFile2 = (CogImageFileTool)(myToolGroup2.Tools["CogImageFileTool1"]);
             myImageFile2.Operator.Open(pathin, CogImageFileModeConstants.Read);
             Imagein2 = new Bitmap(pathin);
@@ -152,12 +180,12 @@ namespace VisionProAPI
         #region GetResult
         public bool GetResult0(ref Result0 result)
         {
-            if (null == myJobManager)
+            if (null == myJobManager0)
             {
                 return false;
             }
             ICogRecord tmpRecord;
-            ICogRecord topRecord = myJobManager.UserResult();
+            ICogRecord topRecord = myJobManager0.UserResult();
             if (null == topRecord)
             {
                 return false;
@@ -196,12 +224,12 @@ namespace VisionProAPI
         }
         public bool GetResult1(ref Result1 reuslt)
         {
-            if (null == myJobManager)
+            if (null == myJobManager1)
             {
                 return false;
             }
             ICogRecord tmpRecord;
-            ICogRecord topRecord = myJobManager.UserResult();
+            ICogRecord topRecord = myJobManager1.UserResult();
             if (null == topRecord)
             {
                 return false;
@@ -221,12 +249,12 @@ namespace VisionProAPI
         }
         public bool GetResult2(ref Result2 result)
         {
-            if (null == myJobManager)
+            if (null == myJobManager2)
             {
                 return false;
             }
             ICogRecord tmpRecord;
-            ICogRecord topRecord = myJobManager.UserResult();
+            ICogRecord topRecord = myJobManager2.UserResult();
             if (null == topRecord)
             {
                 return false;
@@ -250,7 +278,7 @@ namespace VisionProAPI
             GetImage0(_pathin);
             try
             {
-                myJobManager.Run();
+                myJobManager0.Run();
                 System.Threading.Thread.Sleep(time);
             }
             catch { }
@@ -261,7 +289,7 @@ namespace VisionProAPI
             GetImage1(_pathin);
             try
             {
-                myJobManager.Run();
+                myJobManager1.Run();
                 System.Threading.Thread.Sleep(time);
             }
             catch { }
@@ -272,7 +300,7 @@ namespace VisionProAPI
             GetImage2(_pathin);
             try
             {
-                myJobManager.Run();
+                myJobManager2.Run();
                 System.Threading.Thread.Sleep(time);
             }
             catch { }
@@ -356,19 +384,33 @@ namespace VisionProAPI
         #region CloseAndStop
         public bool Close()
         {
-            if (null != myJobManager)
+            if (null != myJobManager0)
             {
                 myJob0.Reset();
-                myJob1.Reset();
-                myJob2.Reset();
-                myJobManager.Stop();
-                myJobManager.Shutdown();
+                myJobManager0.Stop();
+                myJobManager0.Shutdown();
                 myJob0 = null;
-                myJob0 = null;
-                myJob0 = null;
-                myJobManager = null;
+                myJobManager0 = null;
                 myJobIndependent0 = null;
+                return true;
+            }
+            if (null != myJobManager1)
+            {
+                myJob1.Reset();
+                myJobManager1.Stop();
+                myJobManager1.Shutdown();
+                myJob1 = null;
+                myJobManager1 = null;
                 myJobIndependent1 = null;
+                return true;
+            }
+            if (null != myJobManager2)
+            {
+                myJob2.Reset();
+                myJobManager2.Stop();
+                myJobManager2.Shutdown();
+                myJob2 = null;
+                myJobManager2 = null;
                 myJobIndependent2 = null;
                 return true;
             }
@@ -377,7 +419,9 @@ namespace VisionProAPI
         }
         public void Stop()
         {
-            myJobManager.Stop();
+            myJobManager0.Stop();
+            myJobManager1.Stop();
+            myJobManager2.Stop();
         }
         #endregion
         #endregion

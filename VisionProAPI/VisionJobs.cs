@@ -108,19 +108,19 @@ namespace VisionProAPI
         private bool GetImage(int numOfJobs, List<string> pathin)
         {
 
-                if (null == pathin[numOfJobs])
-                {
-                    return false;
-                }
-                else
-                {
-                    myToolGroup = (CogToolGroup)(myJobManager.Job(numOfJobs).VisionTool);
-                    myImageFile = (CogImageFileTool)(myToolGroup.Tools["CogImageFileTool1"]);
-                    myImageFile.Operator.Open(pathin[numOfJobs], CogImageFileModeConstants.Read);
-                    Imagein = new Bitmap(pathin[numOfJobs]);
-                    myImageFile.InputImage = new CogImage8Grey(Imagein);
-                    myImageFile.Run();
-                
+            if (null == pathin[numOfJobs])
+            {
+                return false;
+            }
+            else
+            {
+                myToolGroup = (CogToolGroup)(myJobManager.Job(numOfJobs).VisionTool);
+                myImageFile = (CogImageFileTool)(myToolGroup.Tools["CogImageFileTool1"]);
+                myImageFile.Operator.Open(pathin[numOfJobs], CogImageFileModeConstants.Read);
+                Imagein = new Bitmap(pathin[numOfJobs]);
+                myImageFile.InputImage = new CogImage8Grey(Imagein);
+                myImageFile.Run();
+                Imagein = null;
             }
             return true;
         }
