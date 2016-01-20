@@ -106,6 +106,28 @@ namespace VisionProAPI
             cogRecordDisplay[numOfSource] = null;
             return true;
         }
+        public bool setImage(Bitmap bitmap, int numOfSource)
+        {
+            if (null != cogRecordDisplay)
+            {
+                if (null != bitmap)
+                {
+                    if (null != Imagein)
+                    {
+                        Imagein.Dispose();
+                    }
+                    Imagein = new Bitmap(bitmap);
+                    cogRecordDisplay[numOfSource].Image = new CogImage8Grey(Imagein);
+                }
+                else
+                {
+                    cogRecordDisplay[numOfSource].Image = null;
+                }
+                cogRecordDisplay[numOfSource].Fit(true);
+                return true;
+            }
+            return false;
+        }
         #endregion  
         #region GetImageFromFile
         private bool GetImage(int numOfVpps, List<string> pathin)
@@ -125,6 +147,110 @@ namespace VisionProAPI
                 Imagein = null;
             }
             return true;
+        }
+        #endregion
+        #region GetResult
+        public bool GetResult(int numOfVpps, List<string> resultin, ref List<double> resultout)
+        {
+            if (null == myJobManager)
+            {
+                return false;
+            }
+            if (null == myJobManager[numOfVpps])
+            {
+                return false;
+            }
+            ICogRecord tmpRecord;
+            ICogRecord topRecord = myJobManager[numOfVpps].UserResult();
+            if (null == topRecord)
+            {
+                return false;
+            }
+            if (null != resultin)
+            {
+                for (int i = 0; i < resultin.Count; i++)
+                {
+                    if (null == resultin[i])
+                    {
+                        return false;
+                    }
+                    else
+                    {
+                        ResultRequest[i] = "@\"" + resultin[i] + "\"";
+                        tmpRecord = topRecord.SubRecords[ResultRequest[i]];
+                        resultout[i] = (double)tmpRecord.Content;
+                        ResultRequest[i] = null;
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+        #endregion
+        #region Run
+        public bool Run(int numOfVpps,int time,List<string> _pathin)
+        {
+            GetImage(numOfVpps, _pathin);
+            try
+            {
+                myJobManager[numOfVpps].Run();
+                System.Threading.Thread.Sleep(time);
+            }
+            catch { }
+            return true;
+        }
+        #endregion
+        #region SetColorMapPreDefined
+        public bool SetColorMapPreDefined(int numOfSource,string type)
+        {
+            if (null == type)
+            {
+                return false;
+            }
+            switch (type)
+            {
+                case "None":
+                    cogRecordDisplay[numOfSource].ColorMapPredefined = Cognex.VisionPro.Display.CogDisplayColorMapPredefinedConstants.None;
+                    return true;
+                case "Grey":
+                    cogRecordDisplay[numOfSource].ColorMapPredefined = Cognex.VisionPro.Display.CogDisplayColorMapPredefinedConstants.Grey;
+                    return true;
+                case "Thermal":
+                    cogRecordDisplay[numOfSource].ColorMapPredefined = Cognex.VisionPro.Display.CogDisplayColorMapPredefinedConstants.Thermal;
+                    return true;
+                case "Height":
+                    cogRecordDisplay[numOfSource].ColorMapPredefined = Cognex.VisionPro.Display.CogDisplayColorMapPredefinedConstants.Height;
+                    return true;
+                default:
+                    return false;
+            }
+        }
+        #endregion
+        #region CloseAndStop
+        public bool Close()
+        {
+            if (null != myJobManager)
+            {
+                for (int i = 0; i < 1000; i++)
+                {
+                    myJob[i].Reset();
+                    myJobManager[i].Stop();
+                    myJobManager[i].Shutdown();
+                    myJob = null;
+                    myJobManager = null;
+                    myJobIndependent = null;
+                }
+                return true;
+            }
+            GC.Collect();
+            return false;
+        }
+        public void Stop()
+        {
+            for (int i = 0; i < 1000; i++)
+            {
+                myJobManager[i].Stop();
+            }
         }
         #endregion
     }

@@ -100,6 +100,66 @@ namespace VisionProAPI
             catch { }
             return true;
         }
+        public bool init0(string vpppath0, CogRecordDisplay cogRecordDisplayin0 = null)
+        {
+            if (null == vpppath0)
+            {
+                return false;
+            }
+            try
+            {
+                myJobManager0 = (CogJobManager)CogSerializer.LoadObjectFromFile(vpppath0);
+                myJob0 = myJobManager0.Job(0);
+                myJobIndependent0 = myJob0.OwnedIndependent;
+                myJobManager0.UserQueueFlush();
+                myJobManager0.FailureQueueFlush();
+                myJob0.ImageQueueFlush();
+                myJobIndependent0.RealTimeQueueFlush();
+                updateDisplaySource0(cogRecordDisplayin0);
+            }
+            catch { }
+            return true;
+        }
+        public bool init1(string vpppath1,CogRecordDisplay cogRecordDisplayin1 = null)
+        {
+            if (null == vpppath1)
+            {
+                return false;
+            }
+            try
+            {
+                myJobManager1 = (CogJobManager)CogSerializer.LoadObjectFromFile(vpppath1);
+                myJob1 = myJobManager1.Job(0);
+                myJobIndependent1 = myJob1.OwnedIndependent;
+                myJobManager1.UserQueueFlush();
+                myJobManager1.FailureQueueFlush();
+                myJob1.ImageQueueFlush();
+                myJobIndependent1.RealTimeQueueFlush();
+                updateDisplaySource1(cogRecordDisplayin1);
+            }
+            catch { }
+            return true;
+        }
+        public bool init2(string vpppath2, CogRecordDisplay cogRecordDisplayin2 = null)
+        {            
+            if (null == vpppath2)
+            {
+                return false;
+            }
+            try
+            {
+                myJobManager2 = (CogJobManager)CogSerializer.LoadObjectFromFile(vpppath2);
+                myJob2 = myJobManager2.Job(0);
+                myJobIndependent2 = myJob2.OwnedIndependent;
+                myJobManager2.UserQueueFlush();
+                myJobManager2.FailureQueueFlush();
+                myJob2.ImageQueueFlush();
+                myJobIndependent2.RealTimeQueueFlush();
+                updateDisplaySource2(cogRecordDisplayin2);
+            }
+            catch { }
+            return true;
+        }
         #endregion
         #region updateDisplaySource and clearDisplaySource
         public bool updateDisplaySource0(CogRecordDisplay cogRecordDisplayin)
@@ -222,7 +282,7 @@ namespace VisionProAPI
             }
             return true;
         }
-        public bool GetResult1(ref Result1 reuslt)
+        public bool GetResult1(ref Result1 result)
         {
             if (null == myJobManager1)
             {
@@ -233,6 +293,21 @@ namespace VisionProAPI
             if (null == topRecord)
             {
                 return false;
+            }
+            tmpRecord = topRecord.SubRecords[@"Angle"];
+            if (null != tmpRecord.Content) if (tmpRecord.Content != null)
+                {
+                    result.ResultAngle = (double)tmpRecord.Content;
+                }
+            tmpRecord = topRecord.SubRecords[@"Title"];
+            if (null != tmpRecord.Content)
+            {
+                result.ResultTitle = (double)tmpRecord.Content;
+            }
+            tmpRecord = topRecord.SubRecords[@"Distance"];
+            if (null != tmpRecord.Content)
+            {
+                result.ResultDistance = (double)tmpRecord.Content;
             }
             if (null != cogRecordDisplay1)
             {
@@ -272,6 +347,7 @@ namespace VisionProAPI
             }
             return true;
         }
+        #endregion
         #region Run
         public bool Run0(int time, string _pathin)
         {
@@ -423,7 +499,6 @@ namespace VisionProAPI
             myJobManager1.Stop();
             myJobManager2.Stop();
         }
-        #endregion
         #endregion
     }
 }

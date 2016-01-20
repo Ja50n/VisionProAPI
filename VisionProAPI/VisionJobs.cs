@@ -19,7 +19,6 @@ namespace VisionProAPI
         private List<CogRecordDisplay> cogRecordDisplay = null;
         private CogToolGroup myToolGroup;
         private List<string> ResultRequest;
-        private string ResultRequestOnce;
         #endregion
         #region init
         public bool init(string vpppath, int amountOfJobs, List<CogRecordDisplay> cogRecordDisplayin = null)
@@ -103,6 +102,28 @@ namespace VisionProAPI
             cogRecordDisplay[numOfSource] = null;
             return true;
         }
+        public bool setImage(Bitmap bitmap, int numOfSource)
+        {
+            if (null != cogRecordDisplay)
+            {
+                if (null != bitmap)
+                {
+                    if (null != Imagein)
+                    {
+                        Imagein.Dispose();
+                    }
+                    Imagein = new Bitmap(bitmap);
+                    cogRecordDisplay[numOfSource].Image = new CogImage8Grey(Imagein);
+                }
+                else
+                {
+                    cogRecordDisplay[numOfSource].Image = null;
+                }
+                cogRecordDisplay[numOfSource].Fit(true);
+                return true;
+            }
+            return false;
+        }
         #endregion
         #region GetImageFromFile
         private bool GetImage(int numOfJobs, List<string> pathin)
@@ -153,7 +174,7 @@ namespace VisionProAPI
         /// <param name="resultin"></param>
         /// <param name="resultout"></param>
         /// <returns></returns>
-        public bool GetResults(List<string> resultin, ref List<double> resultout)
+        public bool GetResult(List<string> resultin, ref List<double> resultout)
         {
             if (null == myJobManager)
             {
@@ -176,78 +197,13 @@ namespace VisionProAPI
                     else
                     {
                         ResultRequest[i] = "@\"" + resultin[i] + "\"";
-                        tmpRecord = topRecord.SubRecords[ResultRequest[i]];
-                        ResultRequest[i] = resultin[i];
-                        resultout[i] = (double)tmpRecord.Content;
+                        tmpRecord = topRecord.SubRecords[ResultRequest[i]];                            resultout[i] = (double)tmpRecord.Content;
+                        ResultRequest[i] = null;
                     }
                 }
-                return false;
+                return true;
             }
-            return true;
-        }
-        /// <summary>
-        /// Get One Result with List string
-        /// </summary>
-        /// <param name="resultin"></param>
-        /// <param name="numOfResult"></param>
-        /// <param name="resultout"></param>
-        /// <returns></returns>
-        //public bool GetOneResult(List<string> resultin, int numOfResult, ref List<double> resultout)
-        //{
-        //    if (null == myJobManager)
-        //    {
-        //        return false;
-        //    }
-        //    ICogRecord tmpRecord;
-        //    ICogRecord topRecord = myJobManager.UserResult();
-        //    if (null == topRecord)
-        //    {
-        //        return false;
-        //    }
-        //    if (null == resultin)
-        //    {
-        //        if (null == resultin[numOfResult])
-        //        {
-        //            return false;
-        //        }
-        //        else
-        //        {
-        //            ResultRequest[numOfResult] = "@\"" + resultin[numOfResult] + "\"";
-        //            tmpRecord = topRecord.SubRecords[ResultRequest[numOfResult]];
-        //            ResultRequest[numOfResult] = resultin[numOfResult];
-        //            resultout[numOfResult] = (double)tmpRecord.Content;
-        //        }
-        //        return false;
-        //    }
-        //    return true;
-        //}
-        /// <summary>
-        /// Get One Result with string
-        /// </summary>
-        /// <param name="resultin"></param>
-        /// <param name="resultout"></param>
-        /// <returns></returns>
-        public bool GetOneResult(string resultin, ref double resultout)
-        {
-            if (null == myJobManager)
-            {
-                return false;
-            }
-            ICogRecord tmpRecord;
-            ICogRecord topRecord = myJobManager.UserResult();
-            if (null == topRecord)
-            {
-                return false;
-            }
-            if (null == resultin)
-            {
-                ResultRequestOnce = "@\"" + resultin + "\"";
-                tmpRecord = topRecord.SubRecords[ResultRequestOnce];
-                ResultRequestOnce = resultin;
-                resultout = (double)tmpRecord.Content;
-                return false;
-            }
-            return true;
+            return false;
         }
         #endregion
         #region Run
