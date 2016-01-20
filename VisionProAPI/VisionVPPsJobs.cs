@@ -137,7 +137,7 @@ namespace VisionProAPI
         }
         #endregion  
         #region GetImageFromFile
-        private bool GetImage(int numOfVpps, List<string> pathin)
+        private bool GetImage(int numOfVpps, int numOfJobs, string pathin)
         {
             if (null == pathin[numOfVpps])
             {
@@ -145,10 +145,10 @@ namespace VisionProAPI
             }
             else
             {
-                myToolGroup = (CogToolGroup)(myJobManager[numOfVpps].Job(numOfVpps).VisionTool);
+                myToolGroup = (CogToolGroup)(myJobManager[numOfVpps].Job(numOfJobs).VisionTool);
                 myImageFile = (CogImageFileTool)(myToolGroup.Tools["CogImageFileTool1"]);
-                myImageFile.Operator.Open(pathin[numOfVpps], CogImageFileModeConstants.Read);
-                Imagein = new Bitmap(pathin[numOfVpps]);
+                myImageFile.Operator.Open(pathin, CogImageFileModeConstants.Read);
+                Imagein = new Bitmap(pathin);
                 myImageFile.InputImage = new CogImage8Grey(Imagein);
                 myImageFile.Run();
                 Imagein = null;
@@ -195,9 +195,15 @@ namespace VisionProAPI
         }
         #endregion
         #region Run
-        public bool Run(int numOfVpps,int time,List<string> _pathin)
+        public bool Run(int numOfVpps,int amountOfJobs,int time,List<List<string>> _pathin)
         {
-            GetImage(numOfVpps, _pathin);
+            for (int i=0; i<=numOfVpps; i++)
+            {
+                for(int j=0; j<amountOfJobs;j++)
+                {
+                    GetImage(numOfImages,j, pathin[i][j]);
+                }                
+            }
             try
             {
                 myJobManager[numOfVpps].Run();
@@ -240,12 +246,15 @@ namespace VisionProAPI
             {
                 for (int i = 0; i < 1000; i++)
                 {
-                    myJob[i].Reset();
+                    for(int j=0;j<1000;j++)
+                    {
+                        myJob[i][j].Reset();
+                        myJob = null;
+                        myJobIndependent[i][j] = null;
+                    }
                     myJobManager[i].Stop();
                     myJobManager[i].Shutdown();
-                    myJob = null;
                     myJobManager = null;
-                    myJobIndependent = null;
                 }
                 return true;
             }

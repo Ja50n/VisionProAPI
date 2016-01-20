@@ -1,8 +1,9 @@
 ﻿<Properties StartupItem="VisionProAPI/VisionProAPI.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="VisionProAPI/Vision.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="VisionProAPI/VisionVPPsJobs.cs">
     <Files>
-      <File FileName="VisionProAPI/Vision.cs" Line="14" Column="24" />
+      <File FileName="VisionProAPI/VisionVPPsJobs.cs" Line="32" Column="24" />
+      <File FileName="VisionProAPI/VisionVPPJob.cs" Line="1" Column="1" NotebookId="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

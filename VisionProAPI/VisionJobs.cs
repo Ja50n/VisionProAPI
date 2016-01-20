@@ -147,27 +147,27 @@ namespace VisionProAPI
         }
         #endregion
         #region GetResult
-        public bool GetResultShow(int numOfSource)
-        {
-            if (myJobManager == null)
-            {
-                return false;
-            }
-            ICogRecord tmpRecord;
-            ICogRecord topRecord = myJobManager.UserResult();
-            if (null != cogRecordDisplay)
-            {
-                tmpRecord = topRecord.SubRecords["ShowLastRunRecordForUserQueue"];
-                tmpRecord = tmpRecord.SubRecords["LastRun"];
-                tmpRecord = tmpRecord.SubRecords["CogFixtureTool1.OutputImage"];
-                if (null != tmpRecord.Content)
-                {
-                    cogRecordDisplay[numOfSource].Record = tmpRecord;
-                }
-                cogRecordDisplay[numOfSource].Fit(true);
-            }
-            return true;
-        }
+        // public bool GetResultShow(int numOfSource)
+        // {
+        //     if (myJobManager == null)
+        //     {
+        //         return false;
+        //     }
+        //     ICogRecord tmpRecord;
+        //     ICogRecord topRecord = myJobManager.UserResult();
+        //     if (null != cogRecordDisplay)
+        //     {
+        //         tmpRecord = topRecord.SubRecords["ShowLastRunRecordForUserQueue"];
+        //         tmpRecord = tmpRecord.SubRecords["LastRun"];
+        //         tmpRecord = tmpRecord.SubRecords["CogFixtureTool1.OutputImage"];
+        //         if (null != tmpRecord.Content)
+        //         {
+        //             cogRecordDisplay[numOfSource].Record = tmpRecord;
+        //         }
+        //         cogRecordDisplay[numOfSource].Fit(true);
+        //     }
+        //     return true;
+        // }
         /// <summary>
         /// Get All Results together
         /// </summary>
