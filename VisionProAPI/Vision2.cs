@@ -41,11 +41,13 @@ namespace VisionProAPI
         public struct Result1
         {
             public double ResultAngle;
-            public double ResultTitle;
+            public double ResultTilt;
             public double ResultDistance;
         }
         public struct Result2
-        { }
+        {
+            public double ResultString;
+        }
         #endregion
         #region init
         public bool init(string vpppath0,string vpppath1, string vpppath2, CogRecordDisplay cogRecordDisplayin0 = null, CogRecordDisplay cogRecordDisplayin1 = null, CogRecordDisplay cogRecordDisplayin2 = null)
@@ -299,10 +301,10 @@ namespace VisionProAPI
                 {
                     result.ResultAngle = (double)tmpRecord.Content;
                 }
-            tmpRecord = topRecord.SubRecords[@"Title"];
+            tmpRecord = topRecord.SubRecords[@"Tilt"];
             if (null != tmpRecord.Content)
             {
-                result.ResultTitle = (double)tmpRecord.Content;
+                result.ResultTilt = (double)tmpRecord.Content;
             }
             tmpRecord = topRecord.SubRecords[@"Distance"];
             if (null != tmpRecord.Content)
@@ -357,7 +359,10 @@ namespace VisionProAPI
                 myJobManager0.Run();
                 System.Threading.Thread.Sleep(time);
             }
-            catch { }
+            catch
+            {
+                return false;
+            }
             return true;
         }
         public bool Run1(int time, string _pathin)
@@ -368,7 +373,10 @@ namespace VisionProAPI
                 myJobManager1.Run();
                 System.Threading.Thread.Sleep(time);
             }
-            catch { }
+            catch 
+            {
+                return false;
+             }
             return true;
         }
         public bool Run2(int time, string _pathin)
@@ -379,7 +387,10 @@ namespace VisionProAPI
                 myJobManager2.Run();
                 System.Threading.Thread.Sleep(time);
             }
-            catch { }
+            catch 
+            {
+                return false; 
+            }
             return true;
         }
         #endregion
@@ -468,7 +479,6 @@ namespace VisionProAPI
                 myJob0 = null;
                 myJobManager0 = null;
                 myJobIndependent0 = null;
-                return true;
             }
             if (null != myJobManager1)
             {
@@ -478,7 +488,6 @@ namespace VisionProAPI
                 myJob1 = null;
                 myJobManager1 = null;
                 myJobIndependent1 = null;
-                return true;
             }
             if (null != myJobManager2)
             {
@@ -488,10 +497,9 @@ namespace VisionProAPI
                 myJob2 = null;
                 myJobManager2 = null;
                 myJobIndependent2 = null;
-                return true;
             }
             GC.Collect();
-            return false;
+            return true;
         }
         public void Stop()
         {
