@@ -379,7 +379,10 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Vision.cs" />
-    <Compile Include="Vision2.cs" />
+    <Compile Include="Vision1.cs" />
+    <Compile Include="Vision2.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="VisionJobs.cs" />
     <Compile Include="VisionVPPJob.cs" />
     <Compile Include="VisionVPPs.cs" />

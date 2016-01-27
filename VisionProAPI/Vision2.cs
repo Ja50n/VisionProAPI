@@ -582,53 +582,110 @@ namespace M503_Stand_2
         }
         #endregion
         #region Run
-        public bool Run0(int time, string _pathin, ref Result0 result)
+        public int Run0(int time, string _pathin, ref Result0 result)
         {
-            GetImage0(_pathin);
+            Stop0();
+            try
+            {
+                GetImage0(_pathin);
+               
+            }
+            catch 
+            {
+                return 1;
+            }
             try
             {
                 myJobManager0.Run();
                 System.Threading.Thread.Sleep(time);
-                GetResult0(result);
-                Stop0();
-                return true;
             }
-            catch 
+            catch
             {
-                return false;
+                return 2;
             }
+            try
+            {
+                GetResult0(ref result);
+            }
+            catch
+            {
+                return 3;
+            }
+            finally
+            {
+                Stop0();
+            }
+            return 0;
         }
-        public bool Run1(int time, string _pathin, ref Result1 result)
+        public int Run1(int time, string _pathin, ref Result1 result)
         {
-            GetImage1(_pathin);
+            Stop1();
+            try
+            {
+                GetImage1(_pathin);
+
+            }
+            catch
+            {
+                return 1;
+            }
             try
             {
                 myJobManager1.Run();
                 System.Threading.Thread.Sleep(time);
-                GetResult1(result);
-                Stop1();
-                return true;
             }
-            catch 
+            catch
             {
-                return false;
+                return 2;
             }
+            try
+            {
+                GetResult1(ref result);
+            }
+            catch
+            {
+                return 3;
+            }
+            finally
+            {
+                Stop1();
+            }
+            return 0;
         }
-        public bool Run2(int time, string _pathin, ref Result2 result)
+        public int Run2(int time, string _pathin, ref Result2 result)
         {
-            GetImage2(_pathin);
+            Stop2();
+            try
+            {
+                GetImage2(_pathin);
+
+            }
+            catch
+            {
+                return 1;
+            }
             try
             {
                 myJobManager2.Run();
                 System.Threading.Thread.Sleep(time);
-                GetResult2(result);
-                Stop2();
-                return true;
             }
-            catch 
+            catch
             {
-                return false;
+                return 2;
             }
+            try
+            {
+                GetResult2(ref result);
+            }
+            catch
+            {
+                return 3;
+            }
+            finally
+            {
+                Stop2();
+            }
+            return 0;
         }
         #endregion
         #region
@@ -762,7 +819,6 @@ namespace M503_Stand_2
             {
                 return false;
             }
-            return false;
         }
         private void Stop0()
         {
