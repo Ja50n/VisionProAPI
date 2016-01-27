@@ -41,7 +41,7 @@ namespace VisionProAPI
             {
                 return false;
             }
-            try
+            try``z``z
             {
                 myJobManager = (CogJobManager)CogSerializer.LoadObjectFromFile(vpppath);
                 myJob = myJobManager.Job(0);
@@ -321,8 +321,22 @@ namespace VisionProAPI
                 System.Threading.Thread.Sleep(time);
             }
             catch
+            { 
+            }
+            return true;
+        }
+        public bool Run(int time, List<string> _pathin, int numOfVpp, ref Result result)
+        {
+            DataIn(_pathin[numOfVpp]);
+            try
+            {
+                myJobManagerList[numOfVpp].Run();
+                System.Threading.Thread.Sleep(time);
+            }
+            catch
 			{ 
 			}
+            GetResult(numOfVpp,result);
             return true;
         }
         #endregion

@@ -184,6 +184,17 @@ namespace VisionProAPI
                 }
                 return true;
             }
+            if (null != cogRecordDisplay)
+            {
+                tmpRecord = topRecord.SubRecords["ShowLastRunRecordForUserQueue"];
+                tmpRecord = tmpRecord.SubRecords["LastRun"];
+                tmpRecord = tmpRecord.SubRecords["CogFixtureTool1.OutputImage"];
+                if (null != tmpRecord.Content)
+                {
+                    cogRecordDisplay.Record = tmpRecord;
+                }
+                cogRecordDisplay.Fit(true);
+            }
             return false;
         }
         #endregion
