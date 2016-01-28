@@ -618,138 +618,122 @@ namespace M503_Stand_2
         public int Run0(int time, string _pathin, ref Result0 result)
         {
             Stop0();
-            try
+            if(GetImage0(_pathin))
             {
-                GetImage0(_pathin);
+                try
+                {
+                    myJobManager0.Run())
+                    System.Threading.Thread.Sleep(time);
+                }
+                catch
+                {
+                    return 2;
+                }
+                if(GetResult0(ref result))
+                {
+                    Stop0();
+                    return 0;
+                }
+                else
+                {
+                    return 3;
+                }
             }
-            catch
+            else
             {
                 return 1;
             }
-            try
-            {
-                myJobManager0.Run();
-                System.Threading.Thread.Sleep(time);
-            }
-            catch
-            {
-                return 2;
-            }
-            try
-            {
-                GetResult0(ref result);
-            }
-            catch
-            {
-                return 3;
-            }
-            finally
-            {
-                Stop0();
-            }
-            return 0;
+            return 4;
         }
-        public int Run1(int time, string _pathin, ref Result1 result)
+        public int Run1(int time, string _pathin, ref Result0 result)
         {
             Stop1();
-            try
+            if(GetImage1(_pathin))
             {
-                GetImage1(_pathin);
+                try
+                {
+                    myJobManager1.Run())
+                    System.Threading.Thread.Sleep(time);
+                }
+                catch
+                {
+                    return 2;
+                }
+                if(GetResult1(ref result))
+                {
+                    Stop0();
+                    return 0;
+                }
+                else
+                {
+                    return 3;
+                }
             }
-            catch
+            else
             {
                 return 1;
             }
-            try
-            {
-                myJobManager1.Run();
-                System.Threading.Thread.Sleep(time);
-            }
-            catch
-            {
-                return 2;
-            }
-            try
-            {
-                GetResult1(ref result);
-            }
-            catch
-            {
-                return 3;
-            }
-            finally
-            {
-                Stop1();
-            }
-            return 0;
+            return 4;
         }
         public int Run2(int time, string _pathin, ref Result2 result)
         {
             Stop2();
-            try
+            if(GetImage2(_pathin))
             {
-                GetImage2(_pathin);
+                try
+                {
+                    myJobManager2.Run())
+                    System.Threading.Thread.Sleep(time);
+                }
+                catch
+                {
+                    return 2;
+                }
+                if(GetResult2(ref result))
+                {
+                    Stop2();
+                    return 0;
+                }
+                else
+                {
+                    return 3;
+                }
             }
-            catch
+            else
             {
                 return 1;
             }
-            try
-            {
-                myJobManager2.Run();
-                System.Threading.Thread.Sleep(time);
-            }
-            catch
-            {
-                return 2;
-            }
-            try
-            {
-                GetResult2(ref result);
-            }
-            catch
-            {
-                return 3;
-            }
-            finally
-            {
-                Stop2();
-            }
-            return 0;
+            return 4;
         }
-        public int Run3(int time, string _pathin, ref Result3 result)
+        public int Run3(int time, string _pathin, ref Result2 result)
         {
             Stop3();
-            try
+            if(GetImage3(_pathin))
             {
-                GetImage3(_pathin);
+                try
+                {
+                    myJobManager3.Run())
+                    System.Threading.Thread.Sleep(time);
+                }
+                catch
+                {
+                    return 2;
+                }
+                if(GetResult3(ref result))
+                {
+                    Stop3();
+                    return 0;
+                }
+                else
+                {
+                    return 3;
+                }
             }
-            catch
+            else
             {
                 return 1;
             }
-            try
-            {
-                myJobManager3.Run();
-                System.Threading.Thread.Sleep(time);
-            }
-            catch
-            {
-                return 2;
-            }
-            try
-            {
-                GetResult3(ref result);
-            }
-            catch
-            {
-                return 3;
-            }
-            finally
-            {
-                Stop2();
-            }
-            return 0;
+            return 4;
         }
         #endregion
         #region
@@ -859,13 +843,18 @@ namespace M503_Stand_2
             bool closeS4 = false;
             if (null != myJobManager0)
             {
-                myJob0.Reset();
-                myJobManager0.Stop();
-                myJobManager0.Shutdown();
-                myJob0 = null;
-                myJobManager0 = null;
-                myJobIndependent0 = null;
-                closeS1 = true;
+                try
+                {
+                    myJob0.Reset();
+                    myJobManager0.Stop();
+                    myJobManager0.Shutdown();
+                    myJob0 = null;
+                    myJobManager0 = null;
+                    myJobIndependent0 = null;
+                    closeS1 = true;
+                }
+                catch
+                {}
             }
             else
             {
@@ -873,13 +862,18 @@ namespace M503_Stand_2
             }
             if (null != myJobManager1)
             {
-                myJob1.Reset();
-                myJobManager1.Stop();
-                myJobManager1.Shutdown();
-                myJob1 = null;
-                myJobManager1 = null;
-                myJobIndependent1 = null;
-                closeS2 = true;
+                try
+                {
+                    myJob1.Reset();
+                    myJobManager1.Stop();
+                    myJobManager1.Shutdown();
+                    myJob1 = null;
+                    myJobManager1 = null;
+                    myJobIndependent1 = null;
+                    closeS2 = true;
+                }
+                catch
+                {}
             }
             else
             {
@@ -887,13 +881,18 @@ namespace M503_Stand_2
             }
             if (null != myJobManager2)
             {
-                myJob2.Reset();
-                myJobManager2.Stop();
-                myJobManager2.Shutdown();
-                myJob2 = null;
-                myJobManager2 = null;
-                myJobIndependent2 = null;
-                closeS3 = true;
+                try
+                {
+                    myJob2.Reset();
+                    myJobManager2.Stop();
+                    myJobManager2.Shutdown();
+                    myJob2 = null;
+                    myJobManager2 = null;
+                    myJobIndependent2 = null;
+                    closeS3 = true;
+                }
+                catch
+                {}
             }
             else
             {
@@ -901,13 +900,18 @@ namespace M503_Stand_2
             }
             if (null != myJobManager3)
             {
-                myJob3.Reset();
-                myJobManager3.Stop();
-                myJobManager3.Shutdown();
-                myJob3 = null;
-                myJobManager3 = null;
-                myJobIndependent3 = null;
-                closeS4= true;
+                try
+                {
+                    myJob3.Reset();
+                    myJobManager3.Stop();
+                    myJobManager3.Shutdown();
+                    myJob3 = null;
+                    myJobManager3 = null;
+                    myJobIndependent3 = null;
+                    closeS4= true;
+                }
+                catch
+                {}
             }
             else
             {
@@ -925,19 +929,39 @@ namespace M503_Stand_2
         }
         private void Stop0()
         {
-            myJobManager0.Stop();
+            try
+            {
+                myJobManager0.Stop();
+            }
+            catch
+            {}
         }
         private void Stop1()
         {
-            myJobManager1.Stop();
+            try
+            {
+                myJobManager1.Stop();
+            }
+            catch
+            {}
         }
         private void Stop2()
         {
-            myJobManager2.Stop();
+            try
+            {
+                myJobManager2.Stop();
+            }
+            catch
+            {}
         }
         private void Stop3()
         {
-            myJobManager3.Stop();
+            try
+            {
+                myJobManager3.Stop();
+            }
+            catch
+            {}
         }
         #endregion
     }
