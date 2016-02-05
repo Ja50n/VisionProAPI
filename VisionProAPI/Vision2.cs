@@ -559,7 +559,7 @@ namespace M503_Stand_2
                 {
                     tmpRecord = topRecord.SubRecords["ShowLastRunRecordForUserQueue"];
                     tmpRecord = tmpRecord.SubRecords["LastRun"];
-                    tmpRecord = tmpRecord.SubRecords["CogIDTool1.OutputImage"];
+                    tmpRecord = tmpRecord.SubRecords["CogImageFileTool1.OutputImage"];
                     if (null != tmpRecord.Content)
                     {
                         cogRecordDisplay2.Record = tmpRecord;

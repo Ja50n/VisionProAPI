@@ -11,6 +11,9 @@ namespace VisionProAPI
     public class Vision
     {
         #region Definition
+        /// <summary>
+        /// 定义
+        /// </summary>
         private CogJobManager myJobManager;
         private CogJob myJob;
         private CogJobIndependent myJobIndependent;
@@ -18,10 +21,6 @@ namespace VisionProAPI
         private Bitmap Imagein;
         private CogToolGroup mTGTool;
         private CogRecordDisplay cogRecordDisplay = null;
-        private List<CogJobManager> myJobManagerList;
-        private List<CogJob> myJobList;
-        private List<CogJobIndependent> myJobIndependentList;
-		private List<CogJob> myJobsList;
         public struct Result
         {
             public double ResultX;
@@ -30,18 +29,22 @@ namespace VisionProAPI
         }
         #endregion
         #region init
-		/// <summary>
-		/// One VPP with One Job
-		/// </summary>
-		/// <param name="vpppath">Vpppath.</param>
-		/// <param name="cogRecordDisplayin">Cog record displayin.</param>
+        /// <summary>
+        /// 初始化
+        /// </summary>
+        ///
+        /// <param name="vpppath">< VPP路径 ></param>
+        /// <param name="cogRecordDisplayin">< VisionPro显示控件句柄 ></param>
+        ///
+        /// <returns>< bool判定是否初始化成功 ></returns>
         public bool init(string vpppath,CogRecordDisplay cogRecordDisplayin = null)
         {
+            updateDisplaySource(cogRecordDisplayin)
             if (null == vpppath)
             {
                 return false;
             }
-            try``z``z
+            try
             {
                 myJobManager = (CogJobManager)CogSerializer.LoadObjectFromFile(vpppath);
                 myJob = myJobManager.Job(0);
@@ -50,96 +53,22 @@ namespace VisionProAPI
                 myJobManager.FailureQueueFlush();
                 myJob.ImageQueueFlush();
                 myJobIndependent.RealTimeQueueFlush();
-                updateDisplaySource(cogRecordDisplayin);
+                return true;
             }
             catch
             {
- 
-            }
-            return true;           
+                return false;
+            }          
         }
-		/// <summary>
-		/// Any VPP with List and Each VPP contains any Jobs With List
-		/// </summary>
-		/// <param name="vpppath">Vpppath.</param>
-		/// <param name="cogRecordDisplayin">Cog record displayin.</param>
-		public bool init(List<string> vpppath,CogRecordDisplay cogRecordDisplayin = null)
-		{
-			if (null == vpppath)
-			{
-				return false;
-			}
-			try
-			{
-				for(int i =0; i<vpppath.Count;i++)
-				{
-					myJobManagerList[i] = (CogJobManager)CogSerializer.LoadObjectFromFile(vpppath[i]);
-					//Problem: How to get the number of Jobs of each VPP, and if each VPP has different number of Jobs.
-					for(int j =0; j<1000 ;j++)
-					{
-						myJobsList[j] = myJobManagerList[i].Job(j);
-						myJobIndependentList[j] = myJobsList[j].OwnedIndependent;
-						myJobsList[j].ImageQueueFlush();
-						myJobIndependentList[j].RealTimeQueueFlush();
-						if(null == myJobsList[j])
-						{
-							break;
-						}
-					}
-					myJobManagerList[i].UserQueueFlush();
-					myJobManagerList[i].FailureQueueFlush();
-					updateDisplaySource(cogRecordDisplayin);
-				}
-			}
-			catch
-			{
-
-			}
-			return true;           
-		}
-		/// <summary>
-		/// Any VPPS with List and each VPP contains One Job.
-		/// </summary>
-		/// <param name="count">Count.</param>
-		/// <param name="vpppath">Vpppath.</param>
-		/// <param name="cogRecordDisplayin">Cog record displayin.</param>
-        //public bool init(List<string> vpppath, CogRecordDisplay cogRecordDisplayin = null)
-        //{
-        //    if (null == vpppath)
-        //    {
-        //        return false;
-        //    }
-        //    for (int i = 0; i < vpppath.Count; i++)
-        //    {
-        //        if (vpppath[i] == null)
-        //        {
-        //            return false;
-        //        }
-        //        try
-        //        {
-        //            myJobManagerList[i] = (CogJobManager)CogSerializer.LoadObjectFromFile(vpppath[i]);
-        //            myJobList[i] = myJobManagerList[i].Job(0);
-        //            myJobIndependentList[i] = myJobList[i].OwnedIndependent;
-        //            myJobManagerList[i].UserQueueFlush();
-        //            myJobManagerList[i].FailureQueueFlush();
-        //            myJobList[i].ImageQueueFlush();
-        //            myJobIndependentList[i].RealTimeQueueFlush();
-        //            updateDisplaySource(cogRecordDisplayin);
-        //        }
-        //        catch
-        //        {
-
-        //        }
-        //    }
-        //    return true;
-        //}
         #endregion
-        #region updateDisplaySource
+        #region updateDisplaySource and clearDispalySource
         /// <summary>
-		/// Update the display source of the Display tools of Main User Interface
-		/// </summary>
-		/// <returns><c>true</c>, if display source was updated, <c>false</c> otherwise.</returns>
-		/// <param name="cogRecordDisplayin">Cog record displayin.</param>
+        /// 更新显示源
+        /// </summary>
+        ///
+        /// <param name="cogRecordDisplayin">< VisionPro显示控件句柄 ></param>
+        ///
+        /// <returns>< bool判定是否更新成功 ></returns>
         public bool updateDisplaySource(CogRecordDisplay cogRecordDisplayin = null)
         {
             if (null == cogRecordDisplayin)
@@ -149,45 +78,209 @@ namespace VisionProAPI
             cogRecordDisplay = cogRecordDisplayin;
             return true;
         }
+        /// <summary>
+        /// 清除显示源
+        /// </summary>
+        ///
+        /// <returns>< bool判定是否清除成功 ></returns>
+        public bool clearDispalySource()
+        {
+            try
+            {
+                cogRecordDisplayin.Image = null;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        #endregion
+        #region setImage
+        /// <summary>
+        /// 设置图像至VisionPro显示控件
+        /// </summary>
+        ///
+        /// <param name="pathin">< 图片路径 ></param>
+        ///
+        /// <returns>< bool判定是否设置成功 ></returns>
+        public bool setImage(string pathin = null)
+        {
+            if(null != cogRecordDisplay)
+            {
+                if(null != pathin)
+                {
+                    if(System.IO.File.Exists(pathin))
+                    {
+                        Imagein = new Bitmap(pathin);
+                        cogRecordDisplay.Image = new CogImage8Grey(Imagein);
+                        Imagein.Dispose();
+                    }
+                    else
+                    {
+                        cogRecordDisplay.Image = null;
+                    }
+                }
+                else
+                {
+                    cogRecordDisplay.Image = null;
+                }
+                cogRecordDisplay.AutoFit = true;
+                return true;
+            }
+            return false;
+        }
+        /// <summary>
+        /// 设置图像至VisionPro显示控件
+        /// </summary>
+        ///
+        /// <param name="bitmap">< Bitmap 图片 ></param>
+        ///
+        /// <returns>< bool判定是否设置成功 ></returns>
+        public bool setImage(Bitmap bitmap)
+        {
+            if(null != cogRecordDisplay)
+            {
+                if(null != bitmap)
+                {
+                    if(null != Imagein)
+                    {
+                        Imagein.Dispose();
+                    }
+                    Imagein = bitmap;
+                    cogRecordDisplay.Image = new CogImage8Grey(bitmap);
+                    Imagein.Dispose();
+                    else
+                    {
+                        cogRecordDisplay.Image = null;
+                    }
+                }
+                else
+                {
+                    cogRecordDisplay.Image = null;
+                }
+                cogRecordDisplay.AutoFit = true;
+                return true;
+            }
+            return false;
+        }
         #endregion
         #region GetImageFromFile
-		/// <summary>
-		/// Get the Image source (One VPP with One Job)
-		/// </summary>
-		/// <returns><c>true</c>, if in was dataed, <c>false</c> otherwise.</returns>
-		/// <param name="pathin">Pathin.</param>
-        private bool DataIn(string pathin)
+        /// <summary>
+        /// 获取图像
+        /// </summary>
+        ///
+        /// <param name="pathin">< 图片路径 ></param>
+        ///
+        /// <returns>< bool判定是否获取成功 ></returns>
+        private bool GetImage(string pathin)
         {
-            mTGTool = (CogToolGroup)(myJobManager.Job(0).VisionTool);
-            mIFTool = (CogImageFileTool)(mTGTool.Tools["CogImageFileTool1"]);
-            mIFTool.Operator.Open(pathin, CogImageFileModeConstants.Read);            
-            Imagein = new Bitmap(pathin);
-            mIFTool.InputImage = new CogImage8Grey(Imagein);
-            mIFTool.Run();
-            return true; 
-        }
-		/// <summary>
-		/// Get the Image source (some VPP with One Job)
-		/// </summary>
-		/// <returns><c>true</c>, if in was dataed, <c>false</c> otherwise.</returns>
-		/// <param name="pathin">Pathin.</param>
-        private bool DataIn(List<string> pathin)
-        {
-            for (int i = 0; i < pathin.Count; i++)
+            bool step1 = false;
+            bool step2 = false;
+            bool step3 = false;
+            try
             {
-                mTGTool = (CogToolGroup)(myJobManagerList[i].Job(0).VisionTool);
+                mTGTool = (CogToolGroup)(myJobManager.Job(0).VisionTool);
+                step1 = true;
+            }
+            catch
+            {
+                step1 = false;
+            }
+            try
+            {   
                 mIFTool = (CogImageFileTool)(mTGTool.Tools["CogImageFileTool1"]);
-                mIFTool.Operator.Open(pathin[i], CogImageFileModeConstants.Read);
-                Imagein = new Bitmap(pathin[i]);
+                mIFTool.Operator.Open(pathin, CogImageFileModeConstants.Read); 
+                step2 = true;
+            }
+            catch
+            {
+                step2 = false;
+            }
+            try
+            {
+                Imagein = new Bitmap(pathin);
                 mIFTool.InputImage = new CogImage8Grey(Imagein);
-                mIFTool.Run();
-            }                
-            return true;
+                step3 = true;
+            }
+            catch
+            {
+                step3 = false;
+            }
+            if(step1 && step2 && step3)
+            {
+                return true; 
+            }
+            else
+            {
+                return false;
+            }
+        }
+        /// <summary>
+        /// 获取图像
+        /// </summary>
+        ///
+        /// <param name="bitmap">< bitmap图片 ></param>
+        ///
+        /// <returns>< bool判定是否获取成功 ></returns>
+        private bool GetImage(Bitmap bitmap)
+        {
+            bool step1 = false;
+            bool step2 = false;
+            bool step3 = false;
+            try
+            {
+                mTGTool = (CogToolGroup)(myJobManager.Job(0).VisionTool);
+                step1 = true;
+            }
+            catch
+            {
+                step1 = false;
+            }
+            try
+            {   
+                mIFTool = (CogImageFileTool)(mTGTool.Tools["CogImageFileTool1"]);
+                mIFTool.Operator.Open(pathin, CogImageFileModeConstants.Read); 
+                step2 = true;
+            }
+            catch
+            {
+                step2 = false;
+            }
+            try
+            {
+                Imagein = bitmap;
+                mIFTool.InputImage = new CogImage8Grey(Imagein);
+                step3 = true;
+            }
+            catch
+            {
+                step3 = false;
+            }
+            if(step1 && step2 && step3)
+            {
+                return true; 
+            }
+            else
+            {
+                return false;
+            }
         }
         #endregion
         #region GetResult
-        public bool GetResult(ref Result result)
+        /// <summary>
+        /// 获取结果
+        /// </summary>
+        ///
+        /// <param name="result">< 结构体用于储存结果 ></param>
+        ///
+        /// <returns>< bool判定是否获取成功 ></returns>
+        private bool GetResult(ref Result result)
         {
+            bool IsResult1 = false;
+            bool IsResult2 = false;
+            bool IsResult3 = false;
+            bool IsDispaly = false
             if (myJobManager == null)
             {
                 return false;
@@ -198,177 +291,230 @@ namespace VisionProAPI
             {
                 return false;
             }
-            tmpRecord = topRecord.SubRecords[@"X"];
-            if (tmpRecord.Content != null)
+            try
             {
-                result.ResultX = (double)tmpRecord.Content;
-            }
-            tmpRecord = topRecord.SubRecords[@"Y"];
-            if (tmpRecord.Content != null)
-            {
-                result.ResultY = (double)tmpRecord.Content;
-            }
-            tmpRecord = topRecord.SubRecords[@"Angle"];
-            if (tmpRecord.Content != null)
-            {
-                result.ResultAngle = (double)tmpRecord.Content;
-            }
-            if (null != cogRecordDisplay)
-            {
-                tmpRecord = topRecord.SubRecords["ShowLastRunRecordForUserQueue"];
-                tmpRecord = tmpRecord.SubRecords["LastRun"];
-                tmpRecord = tmpRecord.SubRecords["CogFixtureTool1.OutputImage"];
-                if (null != tmpRecord.Content)
+                tmpRecord = topRecord.SubRecords[@"X"];
+                if (tmpRecord.Content != null)
                 {
-                    cogRecordDisplay.Record = tmpRecord;
+                    result.ResultX = (double)tmpRecord.Content;
+                    IsResult1 = true;
                 }
-                cogRecordDisplay.Fit(true);
             }
-            return true;
-        }
-        public bool GetResult(int numOfVpp ,ref Result result)
-        {
-            if (null == myJobManagerList[numOfVpp])
+            catch
+            {
+                IsResult1 = false;
+            }
+            try
+            {
+                tmpRecord = topRecord.SubRecords[@"Y"];
+                if (tmpRecord.Content != null)
+                {
+                    result.ResultY = (double)tmpRecord.Content;
+                    IsResult2 = true;
+                }
+            }
+            catch
+            {
+                IsResult2 = false;
+            }
+            try
+            {
+                tmpRecord = topRecord.SubRecords[@"Angle"];
+                if (tmpRecord.Content != null)
+                {
+                    result.ResultAngle = (double)tmpRecord.Content;
+                    IsResult3 = true;
+                }
+            }
+            catch
+            {
+                IsResult3 = false;
+            }
+            try
+            {
+                if (null != cogRecordDisplay)
+                {
+                    tmpRecord = topRecord.SubRecords["ShowLastRunRecordForUserQueue"];
+                    tmpRecord = tmpRecord.SubRecords["LastRun"];
+                    tmpRecord = tmpRecord.SubRecords["CogFixtureTool1.OutputImage"];
+                    if (null != tmpRecord.Content)
+                    {
+                        cogRecordDisplay.Record = tmpRecord;
+                        IsDispaly = true;
+                    }
+                    cogRecordDisplay.AutoFit = true;
+                }
+            }
+            catch
+            {
+                IsDispaly = false;
+            }
+            if(IsResult1 && IsResult2 && IsResult3 && IsDispaly)
+            {
+                return true;
+            }
+            else
             {
                 return false;
             }
-            ICogRecord tmpRecord;
-            ICogRecord topRecord = myJobManagerList[numOfVpp].UserResult();
-            if (null == topRecord)
-            {
-                return false;
-            }
-            tmpRecord = topRecord.SubRecords[@"X"];
-            if (null != tmpRecord.Content) if (tmpRecord.Content != null)
-            {
-                result.ResultX = (double)tmpRecord.Content;
-            }
-            tmpRecord = topRecord.SubRecords[@"Y"];
-            if (null != tmpRecord.Content)
-            {
-                result.ResultY = (double)tmpRecord.Content;
-            }
-            tmpRecord = topRecord.SubRecords[@"Angle"];
-            if (null != tmpRecord.Content)
-            {
-                result.ResultAngle = (double)tmpRecord.Content;
-            }
-            if (null != cogRecordDisplay)
-            {
-                tmpRecord = topRecord.SubRecords["ShowLastRunRecordForUserQueue"];
-                tmpRecord = tmpRecord.SubRecords["LastRun"];
-                tmpRecord = tmpRecord.SubRecords["CogFixtureTool1.OutputImage"];
-                if (null != tmpRecord.Content)
-                {
-                    cogRecordDisplay.Record = tmpRecord;
-                }
-                cogRecordDisplay.Fit(true);
-            }
-            return true;
-        }
-        #endregion
-        #region SetDifferentColorMap
-        public bool SetColorMapPreDefined(int num)
-        {
-            if (num == 0)
-            {
-                cogRecordDisplay.ColorMapPredefined = Cognex.VisionPro.Display.CogDisplayColorMapPredefinedConstants.None;
-                return true;
-            }
-            if (num == 1)
-            {
-                cogRecordDisplay.ColorMapPredefined = Cognex.VisionPro.Display.CogDisplayColorMapPredefinedConstants.Grey;
-                return true;
-            }
-            if (num == 2)
-            {
-                cogRecordDisplay.ColorMapPredefined = Cognex.VisionPro.Display.CogDisplayColorMapPredefinedConstants.Thermal;
-                return true;
-            }
-            if (num == 3)
-            {
-                cogRecordDisplay.ColorMapPredefined = Cognex.VisionPro.Display.CogDisplayColorMapPredefinedConstants.Height;
-                return true;
-            }
-            if (num == 4)
-            {
-                cogRecordDisplay.ColorMapPredefined = Cognex.VisionPro.Display.CogDisplayColorMapPredefinedConstants.Custom;
-                return true;
-            }
-            return false;
         }
         #endregion
         #region Run
-        public bool Run(int time, string _pathin)
+        /// <summary>
+        /// 运行Job
+        /// </summary>
+        ///
+        /// <param name="time">< 运行等待时间 ></param>
+        /// <param name="_pathin">< 图片路径 ></param>
+        /// <param name="result">< 结果结构体 ></param>
+        ///
+        /// <returns>< 字符串显示错误信息 ></returns>
+        public string Run(int time, string _pathin, ref Result result)
         {
-            DataIn(_pathin);
-            try
+            Stop();
+            if(GetImage(_pathin))
             {
-                myJobManager.Run();
-                System.Threading.Thread.Sleep(time);
+                try
+                {
+                    myJobManager.Run();
+                    System.Threading.Thread.Sleep(time);
+                }
+                catch
+                {
+                    return "Error: JobManager run fail.";
+                }
+                if(GetResult(ref result))
+                {
+                    Stop();
+                    return "Success!";
+                }
+                else
+                {
+                    return "Get result fail";
+                }
             }
-            catch
-            { 
-			}
-            return true;
+            else
+            {
+                return "Error: Get image fail.";
+            }
         }
-        public bool Run(int time, List<string> _pathin, int numOfVpp)
+        /// <summary>
+        /// 运行Job
+        /// </summary>
+        ///
+        /// <param name="time">< 运行等待时间 ></param>
+        /// <param name="bitmap">< bitmap图片 ></param>
+        /// <param name="result">< 结果结构体 ></param>
+        ///
+        /// <returns>< 字符串显示错误信息 ></returns>
+        public string Run(int time, Bitmap bitmap, ref Result result)
         {
-            DataIn(_pathin[numOfVpp]);
-            try
+            Stop();
+            if(GetImage(bitmap))
             {
-                myJobManagerList[numOfVpp].Run();
-                System.Threading.Thread.Sleep(time);
+                try
+                {
+                    myJobManager.Run();
+                    System.Threading.Thread.Sleep(time);
+                }
+                catch
+                {
+                    return "Error: JobManager run fail.";
+                }
+                if(GetResult(ref result))
+                {
+                    Stop();
+                    return "Success!";
+                }
+                else
+                {
+                    return "Get result fail";
+                }
             }
-            catch
-            { 
-            }
-            return true;
-        }
-        public bool Run(int time, List<string> _pathin, int numOfVpp, ref Result result)
-        {
-            DataIn(_pathin[numOfVpp]);
-            try
+            else
             {
-                myJobManagerList[numOfVpp].Run();
-                System.Threading.Thread.Sleep(time);
+                return "Error: Get image fail.";
             }
-            catch
-			{ 
-			}
-            GetResult(numOfVpp,result);
-            return true;
         }
         #endregion
         #region CloseAndStop
+        /// <summary>
+        /// 关闭
+        /// </summary>
         public void Close()
         {
             if (null != myJobManager)
             {
-                myJob.Reset();
-                myJobManager.Stop();
-                myJobManager.Shutdown();
-                myJob = null;
-                myJobManager = null;
-                myJobIndependent = null;
-            }
-            for (int i = 0; i < myJobManagerList.Count; i++)
-            {
-                if (null != myJobManagerList[i])
+                try
                 {
-                    myJobList[i].Reset();
-                    myJobManagerList[i].Stop();
-                    myJobManagerList[i].Shutdown();
-                    myJobList[i] = null;
-                    myJobManagerList[i] = null;
-                    myJobIndependentList[i] = null;
+                    myJob.Reset();
+                    myJobManager.Stop();
+                    myJobManager.Shutdown();
+                    myJob = null;
+                    myJobManager = null;
+                    myJobIndependent = null;
+                    Imagein.Dispose();
+                    return true;
+                }
+                catch
+                {
+                    return false;
+                }
+                GC.Collect();
+            }         
+        }
+        /// <summary>
+        /// 停止
+        /// </summary>
+        ///
+        /// <returns>< bool判定是否停止成功 ></returns>
+        private bool Stop()
+        {
+            try
+            {
+                myJobManager.Stop();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        #endregion
+        #region SetDifferentColorMap
+        /// <summary>
+        /// 设置显示图像格式
+        /// </summary>
+        ///
+        /// <param name="type">< 格式类型 ></param>
+        ///
+        /// <returns>< bool判定是否显示成功 ></returns>
+        public bool SetColorMapPreDefined(string type)
+        {
+            if(null == type)
+            {
+                return false;
+            }
+            else
+            {
+                switch(type)
+                {
+                    case "None":
+                        cogRecordDisplay.ColorMapPredefined = Cognex.VisionPro.Display.CogDisplayColorMapPredefinedConstants.None;
+                        return true;
+                    case "Grey":
+                        cogRecordDisplay.ColorMapPredefined = Cognex.VisionPro.Display.CogDisplayColorMapPredefinedConstants.Grey;
+                        return true;
+                    case "Thermal":
+                        cogRecordDisplay.ColorMapPredefined = Cognex.VisionPro.Display.CogDisplayColorMapPredefinedConstants.Thermal;
+                        return true;
+                    case "Height":
+                        cogRecordDisplay.ColorMapPredefined = Cognex.VisionPro.Display.CogDisplayColorMapPredefinedConstants.Height;
+                        return true;
+                    default:
+                        return false;
                 }
             }
-                GC.Collect();
-        }
-        internal void Stop()
-        {
-            myJobManager.Stop();
         }
         #endregion
     }
