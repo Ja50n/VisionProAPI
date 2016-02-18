@@ -23,9 +23,9 @@ namespace VisionProAPI
         private CogRecordDisplay cogRecordDisplay = null;
         public struct Result
         {
-            public double ResultX;
-            public double ResultY;
-            public double ResultAngle;
+            public double X;
+            public double Y;
+            public double Angle;
         }
         #endregion
         #region init
@@ -39,7 +39,7 @@ namespace VisionProAPI
         /// <returns>< bool判定是否初始化成功 ></returns>
         public bool init(string vpppath,CogRecordDisplay cogRecordDisplayin = null)
         {
-            updateDisplaySource(cogRecordDisplayin)
+            updateDisplaySource(cogRecordDisplayin);
             if (null == vpppath)
             {
                 return false;
@@ -87,7 +87,7 @@ namespace VisionProAPI
         {
             try
             {
-                cogRecordDisplayin.Image = null;
+                cogRecordDisplay.Image = null;
                 return true;
             }
             catch
@@ -145,11 +145,10 @@ namespace VisionProAPI
                 {
                     if(null != Imagein)
                     {
+                        Imagein = bitmap;
+                        cogRecordDisplay.Image = new CogImage8Grey(bitmap);
                         Imagein.Dispose();
                     }
-                    Imagein = bitmap;
-                    cogRecordDisplay.Image = new CogImage8Grey(bitmap);
-                    Imagein.Dispose();
                     else
                     {
                         cogRecordDisplay.Image = null;
@@ -216,56 +215,6 @@ namespace VisionProAPI
                 return false;
             }
         }
-        /// <summary>
-        /// 获取图像
-        /// </summary>
-        ///
-        /// <param name="bitmap">< bitmap图片 ></param>
-        ///
-        /// <returns>< bool判定是否获取成功 ></returns>
-        private bool GetImage(Bitmap bitmap)
-        {
-            bool step1 = false;
-            bool step2 = false;
-            bool step3 = false;
-            try
-            {
-                mTGTool = (CogToolGroup)(myJobManager.Job(0).VisionTool);
-                step1 = true;
-            }
-            catch
-            {
-                step1 = false;
-            }
-            try
-            {   
-                mIFTool = (CogImageFileTool)(mTGTool.Tools["CogImageFileTool1"]);
-                mIFTool.Operator.Open(pathin, CogImageFileModeConstants.Read); 
-                step2 = true;
-            }
-            catch
-            {
-                step2 = false;
-            }
-            try
-            {
-                Imagein = bitmap;
-                mIFTool.InputImage = new CogImage8Grey(Imagein);
-                step3 = true;
-            }
-            catch
-            {
-                step3 = false;
-            }
-            if(step1 && step2 && step3)
-            {
-                return true; 
-            }
-            else
-            {
-                return false;
-            }
-        }
         #endregion
         #region GetResult
         /// <summary>
@@ -280,7 +229,7 @@ namespace VisionProAPI
             bool IsResult1 = false;
             bool IsResult2 = false;
             bool IsResult3 = false;
-            bool IsDispaly = false
+            bool IsDispaly = false;
             if (myJobManager == null)
             {
                 return false;
@@ -296,7 +245,7 @@ namespace VisionProAPI
                 tmpRecord = topRecord.SubRecords[@"X"];
                 if (tmpRecord.Content != null)
                 {
-                    result.ResultX = (double)tmpRecord.Content;
+                    result.X = (double)tmpRecord.Content;
                     IsResult1 = true;
                 }
             }
@@ -309,7 +258,7 @@ namespace VisionProAPI
                 tmpRecord = topRecord.SubRecords[@"Y"];
                 if (tmpRecord.Content != null)
                 {
-                    result.ResultY = (double)tmpRecord.Content;
+                    result.Y = (double)tmpRecord.Content;
                     IsResult2 = true;
                 }
             }
@@ -322,7 +271,7 @@ namespace VisionProAPI
                 tmpRecord = topRecord.SubRecords[@"Angle"];
                 if (tmpRecord.Content != null)
                 {
-                    result.ResultAngle = (double)tmpRecord.Content;
+                    result.Angle = (double)tmpRecord.Content;
                     IsResult3 = true;
                 }
             }
@@ -369,48 +318,10 @@ namespace VisionProAPI
         /// <param name="result">< 结果结构体 ></param>
         ///
         /// <returns>< 字符串显示错误信息 ></returns>
-        public string Run(int time, string _pathin, ref Result result)
+        public string Run(int time = 500, string _pathin, ref Result result)
         {
             Stop();
             if(GetImage(_pathin))
-            {
-                try
-                {
-                    myJobManager.Run();
-                    System.Threading.Thread.Sleep(time);
-                }
-                catch
-                {
-                    return "Error: JobManager run fail.";
-                }
-                if(GetResult(ref result))
-                {
-                    Stop();
-                    return "Success!";
-                }
-                else
-                {
-                    return "Get result fail";
-                }
-            }
-            else
-            {
-                return "Error: Get image fail.";
-            }
-        }
-        /// <summary>
-        /// 运行Job
-        /// </summary>
-        ///
-        /// <param name="time">< 运行等待时间 ></param>
-        /// <param name="bitmap">< bitmap图片 ></param>
-        /// <param name="result">< 结果结构体 ></param>
-        ///
-        /// <returns>< 字符串显示错误信息 ></returns>
-        public string Run(int time, Bitmap bitmap, ref Result result)
-        {
-            Stop();
-            if(GetImage(bitmap))
             {
                 try
                 {
@@ -441,7 +352,7 @@ namespace VisionProAPI
         /// <summary>
         /// 关闭
         /// </summary>
-        public void Close()
+        public bool Close()
         {
             if (null != myJobManager)
             {
@@ -461,7 +372,11 @@ namespace VisionProAPI
                     return false;
                 }
                 GC.Collect();
-            }         
+            }
+            else
+            {
+                return false;
+            }
         }
         /// <summary>
         /// 停止
