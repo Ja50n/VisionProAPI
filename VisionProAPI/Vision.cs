@@ -318,7 +318,7 @@ namespace VisionProAPI
         /// <param name="result">< 结果结构体 ></param>
         ///
         /// <returns>< 字符串显示错误信息 ></returns>
-        public string Run(int time = 500, string _pathin, ref Result result)
+        public string Run(string _pathin, ref Result result, int time = 500)
         {
             Stop();
             if(GetImage(_pathin))
